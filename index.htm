@@ -6,49 +6,67 @@
             overflow: hidden;
         }
 
-        #movingText {
+        .moving-text {
             position: absolute;
             font-size: 24px;
-            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-    <div id="movingText">ここにテキストを入力してください</div>
+    <input type="text" id="inputText" placeholder="テキストを入力してください">
+    <button id="animateButton">アニメーション開始</button>
 
     <script>
-        const movingText = document.getElementById('movingText');
-        let posX = 0;
-        let posY = 0;
-        let speedX = 2;
-        let speedY = 1;
+        const inputText = document.getElementById('inputText');
+        const animateButton = document.getElementById('animateButton');
+        
+        animateButton.addEventListener('click', startAnimation);
 
-        // テキストの初期位置を設定
-        movingText.style.left = posX + 'px';
-        movingText.style.top = posY + 'px';
+        function startAnimation() {
+            const text = inputText.value;
+            inputText.value = '';
 
-        function animate() {
-            // 画面内でテキストをアニメーションする
-            posX += speedX;
-            posY += speedY;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const textElement = document.createElement('div');
+                textElement.textContent = char;
+                textElement.className = 'moving-text';
 
-            const maxX = window.innerWidth - movingText.clientWidth;
-            const maxY = window.innerHeight - movingText.clientHeight;
+                // テキストの初期位置をランダムに設定
+                const posX = Math.random() * (window.innerWidth - 50);
+                const posY = Math.random() * (window.innerHeight - 50);
+                textElement.style.left = posX + 'px';
+                textElement.style.top = posY + 'px';
 
-            if (posX > maxX || posX < 0) {
-                speedX = -speedX;
+                // テキストを画面内をアニメーション
+                animateText(textElement);
+
+                document.body.appendChild(textElement);
             }
-            if (posY > maxY || posY < 0) {
-                speedY = -speedY;
-            }
-
-            movingText.style.left = posX + 'px';
-            movingText.style.top = posY + 'px';
-
-            requestAnimationFrame(animate);
         }
 
-        animate();
+        function animateText(textElement) {
+            const speedX = (Math.random() - 0.5) * 4; // X軸方向の速度
+            const speedY = (Math.random() - 0.5) * 4; // Y軸方向の速度
+
+            function move() {
+                let posX = parseFloat(textElement.style.left);
+                let posY = parseFloat(textElement.style.top);
+
+                posX += speedX;
+                posY += speedY;
+
+                if (posX < 0 || posX > window.innerWidth || posY < 0 || posY > window.innerHeight) {
+                    textElement.remove();
+                } else {
+                    textElement.style.left = posX + 'px';
+                    textElement.style.top = posY + 'px';
+                    requestAnimationFrame(move);
+                }
+            }
+
+            move();
+        }
     </script>
 </body>
 </html>
