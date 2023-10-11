@@ -1,37 +1,54 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Rainbow Text</title>
+<head>
     <style>
-      #text {
-        font-size: 24px;
-        transition: color 0.5s;
-      }
+        body {
+            overflow: hidden;
+        }
+
+        #movingText {
+            position: absolute;
+            font-size: 24px;
+            white-space: nowrap;
+        }
     </style>
-  </head>
-  <body>
-    <button onclick="showRainbowText()">�{�^��������</button>
-    <p id="text">Hello world</p>
+</head>
+<body>
+    <div id="movingText">ここにテキストを入力してください</div>
 
     <script>
-      function showRainbowText() {
-        var textElement = document.getElementById("text");
-        var colors = [
-          "red",
-          "orange",
-          "yellow",
-          "green",
-          "blue",
-          "indigo",
-          "violet"
-        ];
-        var currentColor = 0;
+        const movingText = document.getElementById('movingText');
+        let posX = 0;
+        let posY = 0;
+        let speedX = 2;
+        let speedY = 1;
 
-        setInterval(function() {
-          textElement.style.color = colors[currentColor];
-          currentColor = (currentColor + 1) % colors.length;
-        }, 500);
-      }
+        // テキストの初期位置を設定
+        movingText.style.left = posX + 'px';
+        movingText.style.top = posY + 'px';
+
+        function animate() {
+            // 画面内でテキストをアニメーションする
+            posX += speedX;
+            posY += speedY;
+
+            const maxX = window.innerWidth - movingText.clientWidth;
+            const maxY = window.innerHeight - movingText.clientHeight;
+
+            if (posX > maxX || posX < 0) {
+                speedX = -speedX;
+            }
+            if (posY > maxY || posY < 0) {
+                speedY = -speedY;
+            }
+
+            movingText.style.left = posX + 'px';
+            movingText.style.top = posY + 'px';
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     </script>
-  </body>
+</body>
 </html>
